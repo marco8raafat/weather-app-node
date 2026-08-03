@@ -1,12 +1,15 @@
+
+def tf = readJSON file: "terraform-output.json"
+
+writeFile file: "inventory.ini", text: """
 [master]
-${MASTER_IP}
+${tf.master_public_ip.value}
 
 [workers]
-${WORKER_1_IP}
-${WORKER_2_IP}
+${tf.worker1_public_ip.value}
+${tf.worker2_public_ip.value}
 
 [all:vars]
 ansible_user=ubuntu
-ansible_ssh_private_key_file=~/.ssh/weather-key.pem
 
-ansible_ssh_common_args='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ProxyCommand="ssh -W %h:%p -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/.ssh/weather-key.pem ubuntu@${PUBLIC_IP}"'
+"""

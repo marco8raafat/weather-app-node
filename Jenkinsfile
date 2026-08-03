@@ -4,33 +4,32 @@ library identifier: 'jenkins-shared-library@main', retriever: modernSCM(
     [$class: 'GitSCMSource',
      remote: 'https://github.com/MennaHamouda/jenkins-shares-library',
      credentialsId: 'gitHub'])
-
-pipeline{
+pipeline {
 
     agent any
 
-    stages{
+    stages {
 
-        stage("Build"){
-            steps{
+        stage("Build") {
+            steps {
                 buildNode()
             }
         }
 
-        stage("Test"){
-            steps{
+        stage("Test") {
+            steps {
                 test()
             }
         }
 
-        stage("Docker Build"){
-            steps{
+        stage("Docker Build") {
+            steps {
                 dockerBuild()
             }
         }
 
-        stage("Docker Push"){
-            steps{
+        stage("Docker Push") {
+            steps {
                 dockerPush()
             }
         }
@@ -41,12 +40,17 @@ pipeline{
             }
         }
 
-        stage("Deploy"){
-            steps{
+        stage("Configure EC2") {
+            steps {
+                ansibleConfigure()
+            }
+        }
+
+        stage("Deploy") {
+            steps {
                 deploy()
             }
         }
 
     }
-
 }
