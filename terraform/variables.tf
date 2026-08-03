@@ -3,18 +3,6 @@ variable "aws_region" {
   type        = string
 }
 
-variable "access_key" {
-  description = "AWS Access Key"
-  type        = string
-  sensitive   = true
-}
-
-variable "secret_key" {
-  description = "AWS Secret Key"
-  type        = string
-  sensitive   = true
-}
-
 variable "my_public_ip" {
   description = "Your public IP address"
   type        = string
