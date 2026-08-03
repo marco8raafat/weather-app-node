@@ -48,7 +48,6 @@
       apt:
         name:
           - containerd
-          - apt-transport-https
           - ca-certificates
           - curl
           - gnupg
@@ -59,6 +58,9 @@
       file:
         path: /etc/containerd
         state: directory
+        owner: root
+        group: root
+        mode: "0755"
 
     - name: Generate default containerd config
       shell: containerd config default > /etc/containerd/config.toml
@@ -68,7 +70,7 @@
     - name: Enable SystemdCgroup in containerd config
       replace:
         path: /etc/containerd/config.toml
-        regexp: 'SystemdCgroup = false'
+        regexp: 'SystemdCgroup\s*=\s*false'
         replace: 'SystemdCgroup = true'
 
     - name: Restart and enable containerd
@@ -172,39 +174,3 @@
       command: sh /tmp/join-command.sh
       args:
         creates: /etc/kubernetes/kubelet.conf
-
-
-# =========================================================
-# PLAY D - Deploy the app onto the cluster, MASTER only
-# =========================================================
-# - name: Deploy application to Kubernetes cluster
-#   hosts: master
-#   become: true
-#   become_user: ubuntu
-#   environment:
-#     KUBECONFIG: /home/ubuntu/.kube/config
-#   tasks:
-#     - name: Wait for all nodes to be Ready
-#       command: kubectl get nodes -o jsonpath='{.items[*].status.conditions[?(@.type=="Ready")].status}'
-#       register: node_status
-#       until: "'False' not in node_status.stdout"
-#       retries: 20
-#       delay: 15
-#       changed_when: false
-
-#     - name: Copy app manifest(s) to master
-#       copy:
-#         src: manifests/app.yml
-#         dest: /tmp/app.yml
-
-#     - name: Apply application manifest
-#       command: kubectl apply -f /tmp/app.yml
-
-#     - name: Get deployed service info
-#       command: kubectl get svc -o wide
-#       register: svc_output
-#       changed_when: false
-
-#     - name: Show service info
-#       debug:
-#         var: svc_output.stdout_lines
