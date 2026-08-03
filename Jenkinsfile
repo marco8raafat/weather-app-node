@@ -35,6 +35,12 @@ pipeline{
             }
         }
 
+        stage("Terraform Deploy") {
+            steps {
+                terraformDeploy()
+            }
+        }
+
         stage("Deploy"){
             steps{
                 deploy()
