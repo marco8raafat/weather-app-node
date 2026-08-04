@@ -46,17 +46,6 @@ pipeline {
             }
         }
 
-        stage("Terraform Destroy") {
-            steps {
-               terraformDestroy()
-    }
-}
-        
-        stage("Deploy") {
-            steps {
-                deploy()
-            }
-        }
 
     }
 }
