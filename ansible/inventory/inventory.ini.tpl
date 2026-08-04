@@ -1,21 +1,17 @@
 
-def tf = readJSON file: "terraform-output.json"
-
-writeFile file: "inventory.ini", text: """
 [bastion]
-${tf.bastion_public_ip.value}
+${bastion_public_ip}
 
 [master]
-${tf.master_private_ip.value}
+${master_private_ip}
 
 [workers]
-${tf.worker_private_ips.value.join('\n')}
+${worker_private_ips}
 
 [kubernetes:children]
 master
 workers
 
 [all:vars]
-ansible_user=ubuntu
-ansible_ssh_common_args='-o ProxyJump=ubuntu@${tf.bastion_public_ip.value}'
-"""
+ansible_user=${ansible_user}
+ansible_ssh_common_args='-o ProxyJump=${bastion_ssh_proxy}'
