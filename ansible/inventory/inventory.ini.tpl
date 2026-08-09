@@ -1,7 +1,3 @@
-
-def tf = readJSON file: "terraform-output.json"
-
-writeFile file: "inventory.ini", text: """
 [bastion]
 ${tf.bastion_public_ip.value}
 
@@ -18,4 +14,3 @@ workers
 [all:vars]
 ansible_user=ubuntu
 ansible_ssh_common_args='-o ProxyJump=ubuntu@${tf.bastion_public_ip.value}'
-"""
