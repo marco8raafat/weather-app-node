@@ -16,7 +16,7 @@ ${join("\n", aws_instance.worker[*].private_ip)}
 master
 workers
 
-[all:vars]
+[kubernetes:vars]
 ansible_user=ubuntu
 ansible_ssh_common_args='-o ProxyJump=ubuntu@${aws_instance.bastion.public_ip}'
 EOT
