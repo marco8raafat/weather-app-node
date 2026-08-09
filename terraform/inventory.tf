@@ -1,11 +1,23 @@
 resource "local_file" "ansible_inventory" {
-  filename = "${path.root}/../ansible/inventory.ini"
+  filename        = "${path.root}/../ansible/inventory/inventory.ini"
   file_permission = "0644"
 
-  content = templatefile("${path.module}/templates/hosts.tpl", {
-    bastion_public_ip = module.compute.bastion_public_ip
-    master_ip         = var.master_private_ip
-    worker_ips        = var.worker_private_ips
-    key_name          = var.key_name
-  })
+  content = <<EOT
+[bastion]
+${aws_instance.bastion.public_ip}
+
+[master]
+${aws_instance.master.private_ip}
+
+[workers]
+${join("\n", aws_instance.worker[*].private_ip)}
+
+[kubernetes:children]
+master
+workers
+
+[all:vars]
+ansible_user=ubuntu
+ansible_ssh_common_args='-o ProxyJump=ubuntu@${aws_instance.bastion.public_ip}'
+EOT
 }
