@@ -18,6 +18,6 @@ workers
 
 [kubernetes:vars]
 ansible_user=ubuntu
-ansible_ssh_common_args='-o ProxyJump=ubuntu@${aws_instance.bastion.public_ip}' -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
+ansible_ssh_common_args="-o ProxyJump=ubuntu@${aws_instance.bastion.public_ip}' -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
 EOT
 }
