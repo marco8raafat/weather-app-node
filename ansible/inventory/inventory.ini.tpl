@@ -1,17 +1,16 @@
-
 [bastion]
-${bastion_public_ip}
+${tf.bastion_public_ip.value}
 
 [master]
-${master_private_ip}
+${tf.master_private_ip.value}
 
 [workers]
-${worker_private_ips}
+${tf.worker_private_ips.value.join('\n')}
 
 [kubernetes:children]
 master
 workers
 
 [all:vars]
-ansible_user=${ansible_user}
-ansible_ssh_common_args='-o ProxyJump=${bastion_ssh_proxy}'
+ansible_user=ubuntu
+ansible_ssh_common_args='-o ProxyJump=ubuntu@${tf.bastion_public_ip.value}'
