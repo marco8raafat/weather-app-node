@@ -4,7 +4,7 @@ resource "local_file" "ansible_inventory" {
 
   content = <<EOT
 [bastion]
-${aws_instance.bastion.public_ip}
+${aws_instance.bastion.public_ip} ansible_user=ubuntu ansible_ssh_common_args="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
 
 [master]
 ${aws_instance.master.private_ip}
