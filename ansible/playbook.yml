@@ -3,7 +3,7 @@
 # PLAY A - Common setup, runs on ALL nodes (master + workers)
 # =========================================================
 - name: Common setup for all Kubernetes nodes
-  hosts: all
+  hosts: kubernetes
   become: true
   tasks:
 
