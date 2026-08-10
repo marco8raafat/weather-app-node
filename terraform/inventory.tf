@@ -4,13 +4,13 @@ resource "local_file" "ansible_inventory" {
 
   content = <<EOT
 [bastion]
-${aws_instance.bastion.public_ip} ansible_user=ubuntu ansible_ssh_private_key_file=${path.root}/weather-key.pem ansible_ssh_common_args="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+bastion ansible_host=${aws_instance.bastion.public_ip} ansible_user=ubuntu
 
 [master]
-${aws_instance.master.private_ip}
+master ansible_host=${aws_instance.master.private_ip} ansible_user=ubuntu
 
 [workers]
-${join("\n", aws_instance.worker[*].private_ip)}
+${join("\n", formatlist("worker%02d ansible_host=%s ansible_user=ubuntu", range(1, length(aws_instance.worker) + 1), aws_instance.worker[*].private_ip))}
 
 [kubernetes:children]
 master
@@ -18,6 +18,6 @@ workers
 
 [kubernetes:vars]
 ansible_user=ubuntu
-ansible_ssh_common_args="-o ProxyCommand='ssh -i ${path.root}/weather-key.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -W %h:%p ubuntu@${aws_instance.bastion.public_ip}'"
+ansible_ssh_common_args='-o ProxyCommand="ssh -i terraform/weather-key.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -W %h:%p ubuntu@${aws_instance.bastion.public_ip}"'
 EOT
 }
