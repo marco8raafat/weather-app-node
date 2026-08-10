@@ -4,7 +4,7 @@ resource "local_file" "ansible_inventory" {
 
   content = <<EOT
 [bastion]
-${aws_instance.bastion.public_ip} ansible_user=ubuntu ansible_ssh_common_args="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+${aws_instance.bastion.public_ip} ansible_user=ubuntu ansible_ssh_private_key_file=${path.root}/weather-key.pem ansible_ssh_common_args="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
 
 [master]
 ${aws_instance.master.private_ip}
@@ -18,6 +18,6 @@ workers
 
 [kubernetes:vars]
 ansible_user=ubuntu
-ansible_ssh_common_args="-o ProxyJump=ubuntu@${aws_instance.bastion.public_ip} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+ansible_ssh_common_args="-o ProxyCommand='ssh -i ${path.root}/weather-key.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -W %h:%p ubuntu@${aws_instance.bastion.public_ip}'"
 EOT
 }
