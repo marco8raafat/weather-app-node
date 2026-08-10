@@ -45,6 +45,18 @@ pipeline {
                 ansibleConfigure()
             }
         }
+
+        
+        stage('Kubernetes Deploy') {
+
+            steps {
+
+                kubernetesDeploy()
+
+            }
+        }
+
+
     }
 
 }
